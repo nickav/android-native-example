@@ -10,5 +10,6 @@ export ANDROID_SDK="$HOME/Library/Android/sdk"
 export JAVA_JDK="/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/"
 
 ./a.sh
+./a.sh log
 
 popd

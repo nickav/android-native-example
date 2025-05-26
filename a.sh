@@ -43,10 +43,22 @@ get_package_activity() {
 
 build() {
   [ ! -d bin ] && mkdir bin
+  mkdir -p bin/classes
   
   "$ANDROID_NDK/ndk-build" -j4 NDK_LIBS_OUT=lib/lib || return 1
-  
-  "$ANDROID_SDK/build-tools/$BUILD_TOOLS/aapt" package -f -M AndroidManifest.xml -I "$ANDROID_SDK/platforms/$PLATFORM/android.jar" -A assets -F bin/$APK.build lib || return 1
+
+  # mkdir -p bin/com/example/NativeExample
+  # cp jni/MainActivity.java bin/com/example/NativeExample/MainActivity.java
+  # "$JAVA_JDK/bin/javac" -d "bin/classes" -classpath "$ANDROID_SDK/platforms/$PLATFORM/android.jar" jni/MainActivity.java || return 1
+  # "$ANDROID_SDK/build-tools/$BUILD_TOOLS/d8" --no-desugaring --output bin/ bin/com/example/NativeExample/MainActivity.class || return 1
+
+  mkdir -p bin/classes/com/example/NativeExample
+  mkdir -p bin/src/com/example/NativeExample
+  cp jni/MainActivity.java bin/src/com/example/NativeExample/
+  "$JAVA_JDK/bin/javac" -d "bin/classes" -classpath "$ANDROID_SDK/platforms/$PLATFORM/android.jar" bin/src/com/example/NativeExample/MainActivity.java || return 1
+  "$ANDROID_SDK/build-tools/$BUILD_TOOLS/d8" --no-desugaring --output bin/ bin/classes/com/example/NativeExample/MainActivity.class || return 1
+
+  "$ANDROID_SDK/build-tools/$BUILD_TOOLS/aapt" package -f -M AndroidManifest.xml -I "$ANDROID_SDK/platforms/$PLATFORM/android.jar" -A assets -F bin/$APK.build bin lib || return 1
   
   if [ ! -f .keystore ]; then
     "$JAVA_JDK/bin/keytool" -genkey -dname "CN=Android Debug, O=Android, C=US" -keystore .keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -validity 30000 || return 1

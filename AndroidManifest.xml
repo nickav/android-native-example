@@ -4,18 +4,18 @@
           android:versionCode="1"
           android:versionName="1.0">
 
-  <uses-sdk android:minSdkVersion="23" />
+  <uses-sdk android:minSdkVersion="24" />
   <uses-feature android:glEsVersion="0x00020000" android:required="true" />
 
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
 
   <application
       android:label="NativeExample"
-      android:hasCode="false"
+      android:hasCode="true"
       android:debuggable="false">
 
-    <activity android:name="android.app.NativeActivity"
-              android:configChanges="orientation|keyboardHidden"
+    <activity android:name=".MainActivity"
+              android:configChanges="orientation|keyboardHidden|screenSize"
               android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
       <meta-data android:name="android.app.lib_name"

@@ -1,5 +1,4 @@
 #include <jni.h>
-#include <string.h>
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
@@ -7,6 +6,8 @@
 #include <android/log.h>
 #include <android/asset_manager.h>
 #include <android_native_app_glue.h>
+
+#include <string.h>
 
 #define LOG(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeExample", __VA_ARGS__))
 
@@ -91,10 +92,14 @@ static int engine_init_display(struct engine* engine)
     LOG("GL_VENDOR = %s", glGetString(GL_VENDOR));
     LOG("GL_RENDERER = %s", glGetString(GL_RENDERER));
     LOG("GL_VERSION = %s", glGetString(GL_VERSION));
+    ARect rect = engine->app->contentRect;
+    LOG("contentRect = (%d, %d, %d, %d)", rect.left, rect.top, rect.right, rect.bottom);
 
     EGLint w, h;
     eglQuerySurface(display, surface, EGL_WIDTH, &w);
     eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+
+    LOG("surface = (%d, %d)", w, h);
 
     engine->display = display;
     engine->context = context;
@@ -220,30 +225,58 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
     switch (cmd)
     {
         case APP_CMD_INIT_WINDOW:
+        {
             if (engine->app->window != NULL)
             {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
-            break;
+        } break;
 
         case APP_CMD_TERM_WINDOW:
+        {
             engine_term_display(engine);
-            break;
+        }
+        break;
         
         case APP_CMD_GAINED_FOCUS:
+        {
             engine->active = 1;
-            break;
+        }
+        break;
 
         case APP_CMD_LOST_FOCUS:
+        {
             engine->active = 0;
             engine_draw_frame(engine);
-            break;
+        }
+        break;
     }
 }
 
+#if 0
+static int safe_top = 0;
+static int safe_bottom = 0;
+static int safe_left = 0;
+static int safe_right = 0;
+
+JNIEXPORT void JNICALL
+Java_com_example_NativeExample_MainActivity_nativeSetSafeArea(JNIEnv *env, jclass clazz,
+                                                             jint top, jint bottom, 
+                                                             jint left, jint right) {
+   safe_top = top;
+   safe_bottom = bottom;
+   safe_left = left;
+   safe_right = right;
+   
+   LOG("[SafeArea] Safe area: %d %d %d %d", top, bottom, left, right);
+}
+#endif
+
 void android_main(struct android_app* state)
 {
+    LOG("---\n");
+
     struct engine engine;
     memset(&engine, 0, sizeof(engine));
 
