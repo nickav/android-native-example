@@ -254,14 +254,13 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
     }
 }
 
-#if 0
 static int safe_top = 0;
 static int safe_bottom = 0;
 static int safe_left = 0;
 static int safe_right = 0;
 
 JNIEXPORT void JNICALL
-Java_com_example_NativeExample_MainActivity_nativeSetSafeArea(JNIEnv *env, jclass clazz,
+Java_com_example_NativeExample_MainActivity_nativeSetSafeArea(JNIEnv *env, jobject this,
                                                              jint top, jint bottom, 
                                                              jint left, jint right) {
    safe_top = top;
@@ -271,7 +270,6 @@ Java_com_example_NativeExample_MainActivity_nativeSetSafeArea(JNIEnv *env, jclas
    
    LOG("[SafeArea] Safe area: %d %d %d %d", top, bottom, left, right);
 }
-#endif
 
 void android_main(struct android_app* state)
 {

@@ -14,6 +14,11 @@ import android.view.ViewGroup;
 import android.util.Log;
 
 public class MainActivity extends NativeActivity {
+    static {
+        System.loadLibrary("main");
+    }
+    public native void nativeSetSafeArea(int top, int bottom, int left, int right);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +32,6 @@ public class MainActivity extends NativeActivity {
         hideSystemUI();
         getSafeArea();
     }
-
-    // public static native void nativeSetSafeArea(int top, int bottom, int left, int right);
     
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -58,7 +61,7 @@ public class MainActivity extends NativeActivity {
         }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void getSafeArea() {
@@ -70,9 +73,11 @@ public class MainActivity extends NativeActivity {
             int safeLeft = insets.getSystemWindowInsetLeft();
             int safeRight = insets.getSystemWindowInsetRight();
             
-            Log.d("SafeArea", "Top: " + safeTop + ", Bottom: " + safeBottom + ", Left: " + safeLeft + ", Right: " + safeRight);
+            Log.i("SafeArea", "Top: " + safeTop + ", Bottom: " + safeBottom + ", Left: " + safeLeft + ", Right: " + safeRight);
             
-            // nativeSetSafeArea(safeTop, safeBottom, safeLeft, safeRight);
+            nativeSetSafeArea(safeTop, safeBottom, safeLeft, safeRight);
+        } else {
+            nativeSetSafeArea(0, 0, 0, 0);
         }
     }
 }
