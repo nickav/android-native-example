@@ -271,17 +271,33 @@ Java_com_example_NativeExample_MainActivity_nativeSetSafeArea(JNIEnv *env, jobje
    LOG("[SafeArea] Safe area: %d %d %d %d", top, bottom, left, right);
 }
 
-void android_main(struct android_app* state)
+void java__vibrate(ANativeActivity *activity) {
+    JNIEnv *env = NULL;
+    JavaVM *vm = activity->vm;
+    
+    (*vm)->AttachCurrentThread(vm, &env, NULL);
+    
+    jclass clazz = (*env)->GetObjectClass(env, activity->clazz);
+    jmethodID methodID = (*env)->GetMethodID(env, clazz, "vibrate", "()V");
+    (*env)->CallVoidMethod(env, activity->clazz, methodID);
+    (*env)->DeleteLocalRef(env, clazz);
+    
+    (*vm)->DetachCurrentThread(vm);
+}
+
+void android_main(struct android_app* app)
 {
     LOG("---\n");
 
     struct engine engine;
     memset(&engine, 0, sizeof(engine));
 
-    state->userData = &engine;
-    state->onAppCmd = engine_handle_cmd;
-    state->onInputEvent = engine_handle_input;
-    engine.app = state;
+    app->userData = &engine;
+    app->onAppCmd = engine_handle_cmd;
+    app->onInputEvent = engine_handle_input;
+    engine.app = app;
+
+    java__vibrate(app->activity);
 
     while (1)
     {
@@ -293,10 +309,10 @@ void android_main(struct android_app* state)
         {
             if (source != NULL)
             {
-                source->process(state, source);
+                source->process(app, source);
             }
 
-            if (state->destroyRequested != 0)
+            if (app->destroyRequested != 0)
             {
                 engine_term_display(&engine);
                 return;

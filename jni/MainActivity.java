@@ -1,17 +1,11 @@
 package com.example.NativeExample;
 
-import android.app.NativeActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.os.Build;
-import android.graphics.Color;
-import android.view.WindowManager;
-import android.view.Window;
-import android.view.ViewGroup;
-
-import android.util.Log;
+import android.app.*;
+import android.os.*;
+import android.view.*;
+import android.graphics.*;
+import android.content.*;
+import android.util.*;
 
 public class MainActivity extends NativeActivity {
     static {
@@ -78,6 +72,15 @@ public class MainActivity extends NativeActivity {
             nativeSetSafeArea(safeTop, safeBottom, safeLeft, safeRight);
         } else {
             nativeSetSafeArea(0, 0, 0, 0);
+        }
+    }
+
+    public void vibrate() {
+        Vibrator v = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(50, 50));
+        } else {
+            v.vibrate(500);
         }
     }
 }
