@@ -13,3 +13,22 @@ Now you can use `a.cmd` to build, install and run the application:
       install   - only install .apk file on connected device
       launch    - ony run already installed .apk file
       log       - show logcat
+
+
+Clear logs:
+
+```bash
+adb logcat -c
+```
+
+Dump crashes:
+
+```bash
+adb logcat -s "AndroidRuntime"
+```
+
+Show app logs:
+
+```bash
+adb logcat -s "NativeExample"
+```
